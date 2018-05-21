@@ -1,26 +1,32 @@
 #ifndef BANK_H
 #define BANK_H
 
+class Person;
+class Konto;
+
 #include <string>
-#include <vector>
 #include <memory>
 #include <unordered_map>
 #include "person.h"
-
-class Person;
+#include "konto.h"
 
 class Bank {
-  // std::unordered_map< std::string, std::vector<std::shared_ptr<Person> > > konten_map; //bank account name to people that can manage it
-  // std::unordered_map< std::string, std::vector<std::weak_ptr<Konto> > > kunden_map; //name of person to the bank accounts
-  std::vector<std::shared_ptr<Person>> kunden;
+  std::unordered_map< std::string, std::vector<std::shared_ptr<Konto> > > clients_map; //name of person to the bank accounts
+  std::unordered_map< std::string, std::vector<std::weak_ptr<Person> > > accounts_map; //bank account name to people that can manage it
 
 public:
   Bank();
-  ~Bank();
-  void neuer_kunde(std::string);
+  std::shared_ptr<Person> neuer_kunde(std::string);
+  std::unordered_map< std::string, std::vector<std::shared_ptr<Konto> > > get_clients_map() const;
+  std::unordered_map< std::string, std::vector<std::weak_ptr<Person> > > get_accounts_map() const;
+
+  void add_client(std::string, std::vector<std::shared_ptr<Konto>>);
+  void add_account(std::string, std::vector<std::weak_ptr<Person>>);
+
   std::shared_ptr<Person> get_kunde_for_name(std::string);
-  std::vector<std::shared_ptr<Person>> get_kunden();
-  void kunde_loeschen(std::shared_ptr<Person>);
+
+  void remove_client(std::shared_ptr<Person>);
+  void remove_account(std::shared_ptr<Konto>);
 };
 
 #endif

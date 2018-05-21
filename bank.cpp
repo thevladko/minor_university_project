@@ -3,35 +3,43 @@
 
 Bank::Bank() {}
 
-Bank::~Bank() {}
-
-void Bank::neuer_kunde(std::string name) {
-  auto kunde = std::make_shared<Person>(name);
-  kunde->neues_konto();
-  this->kunden.push_back(kunde);
+std::shared_ptr<Person> Bank::neuer_kunde(std::string name) {
+  auto new_client{std::make_shared<Person>(name)};
+  new_client->connect_with_bank(this);
+  new_client->neues_konto();
+  return new_client;
 }
 
-std::shared_ptr<Person> Bank::get_kunde_for_name(std::string name) {
-  std::shared_ptr<Person> kunde;
-  for(const auto& elem : kunden){
-    if (elem->get_name() == name) {
-      kunde = elem;
+std::unordered_map< std::string, std::vector<std::shared_ptr<Konto> > > Bank::get_clients_map() const {
+  return clients_map;
+}
+
+std::unordered_map< std::string, std::vector<std::weak_ptr<Person> > > Bank::get_accounts_map() const {
+  return accounts_map;
+}
+
+void Bank::add_client(std::string name, std::vector<std::shared_ptr<Konto>> accounts) {
+  clients_map[name] = accounts;
+}
+
+void Bank::add_account(std::string number, std::vector<std::weak_ptr<Person>> authorized_clients) {
+  accounts_map[number] = authorized_clients;
+}
+
+void Bank::remove_client(std::shared_ptr<Person> p) {
+  for(auto it = clients_map.begin(); it != clients_map.end();){
+    if(it->first == p->get_name()) {
+      it = clients_map.erase(it);
+    } else {
+      ++it;
     }
   }
-  return kunde;
 }
 
-std::vector<std::shared_ptr<Person>> Bank::get_kunden() {
-  return kunden;
-}
-
-//reset on pointer
-//delete from vector
-
-void Bank::kunde_loeschen(std::shared_ptr<Person> p){
-  for(auto it = kunden.begin(); it != kunden.end();){
-    if((*it)->get_name() == p->get_name()) {
-      it = this->kunden.erase(it);
+void Bank::remove_account(std::shared_ptr<Konto> k) {
+  for(auto it = accounts_map.begin(); it != accounts_map.end();){
+    if(it->first == k->get_account_number()) {
+      it = accounts_map.erase(it);
     } else {
       ++it;
     }

@@ -21,55 +21,94 @@
 // Kontoart, für die ein festgelegter Prozentsatz vom Buchungsbetrag als Gebühr verbucht wird ;
 #include <iostream>
 #include <memory>
+#include <unordered_map>
+#include <vector>
 #include "konto.h"
 #include "person.h"
 #include "bank.h"
 #include "girokonto.h"
 #include "businesskonto.h"
 
-
 int main() {
 
   auto bank = std::make_shared<Bank>();
-  bank->neuer_kunde("Vladik");
-  bank->neuer_kunde("Gregor");
 
-  auto vladik = bank->get_kunde_for_name("Vladik");
-  auto gregor = bank->get_kunde_for_name("Gregor");
+  auto vladik = bank->neuer_kunde("Vladik");
+  auto gregor = bank->neuer_kunde("Gregor");
 
-  std::cout << vladik->get_name() << std::endl;
-  std::cout << gregor->get_name() << std::endl;
+  // std::cout << vladik->get_name() << std::endl;
+  // std::cout << gregor->get_name() << std::endl;
 
-  std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
-  std::cout << "Anzahl von Konten fuer gregor: " << gregor->get_konten().size() << std::endl;
+  // std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
+  // std::cout << "Anzahl von Konten fuer gregor: " << gregor->get_konten().size() << std::endl;
 
-  auto konto = std::make_shared<Konto>(vladik);
+  auto konto = vladik->neues_konto();
 
-  std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
-
-  std::cout << "Konto ist geteilt." << std::endl;
+  // std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
+  // std::cout << "Anzahl von Konten fuer gregor: " << gregor->get_konten().size() << std::endl;
+  //
+  // std::cout << "Konto ist geteilt." << std::endl;
   vladik->konto_teilen(*konto, *gregor);
+  // std::cout << "Anzahl von Konten fuer gregor: " << gregor->get_konten().size() << std::endl;
+  // std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
+  //
+  // std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
+  // vladik->kuendigen();
+  // std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
+  //
+  // std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
 
-  std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
+
+  // std::cout << bank->get_clients_map().size() << std::endl;
+  // std::cout << bank->get_accounts_map().size() << std::endl;
+
+  std::unordered_map< std::string, std::vector<std::shared_ptr<Konto> > > clients = bank->get_clients_map();
+  std::unordered_map< std::string, std::vector<std::weak_ptr<Person> > > accounts = bank->get_accounts_map();
+
+  std::vector<std::shared_ptr<Konto>> accounts_for_vlad = clients["Vladik"];
+  std::vector<std::shared_ptr<Konto>> accounts_for_gregor = clients["Gregor"];
+
+  std::cout << accounts_for_vlad.size() << std::endl;
+
+  std::cout << "___________________________________________________" << std::endl;
+  for(auto elem : bank->get_clients_map()) {
+    std::cout << elem.first << std::endl;
+  }
 
   std::cout << "___________________________________________________" << std::endl;
 
-  std::cout << "kuendigen vladik" << std::endl;
+  for(auto elem : bank->get_accounts_map()) {
+    std::cout << elem.first << std::endl;
+  }
+
+  std::cout << "___________________________________________________" << std::endl;
+
+  std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
+  std::cout << "Gregor kuendigt" << std::endl;
   vladik->kuendigen();
-  std::cout << "kuendigen gregor" << std::endl;
-  gregor->kuendigen();
-  std::cout << "___________________________________________________" << std::endl;
-
   std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
-
-  std::cout << "___________________________________________________" << std::endl;
-
-  std::cout << "Anzahl von Konten fuer vladik: " << vladik->get_konten().size() << std::endl;
   std::cout << "Anzahl von Konten fuer gregor: " << gregor->get_konten().size() << std::endl;
 
   std::cout << "___________________________________________________" << std::endl;
-  std::cout << "Bank Kunden Anzahl: " << bank->get_kunden().size() << std::endl;
+  for(auto elem : bank->get_clients_map()) {
+    std::cout << elem.first << std::endl;
+  }
 
+  std::cout << "___________________________________________________" << std::endl;
+
+  for(auto elem : bank->get_accounts_map()) {
+    std::cout << elem.first << std::endl;
+  }
+
+  std::cout << "___________________________________________________" << std::endl;
+  std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
+  gregor->kuendigen();
+  std::cout << "Anzahl von zeichnungsberechtigten fuer konto: " << konto->get_all_zeichnungsberechtigt().size() << std::endl;
+  std::cout << "___________________________________________________" << std::endl;
+
+  for(auto elem : bank->get_accounts_map()) {
+    std::cout << elem.first << std::endl;
+  }
 
   return 0;
 }

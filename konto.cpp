@@ -1,38 +1,35 @@
 #include "konto.h"
-#include <iostream>
 static int counter = 0;
 
-Konto::Konto(std::shared_ptr<Person> zeichnungsberechtigt) {
+
+Konto::Konto() {
   kontonummer = std::string("AT")+std::to_string(counter++);
   kontostand = 0;
-  disporahmen = 0;
-  this->zeichnungsberechtigt.push_back(zeichnungsberechtigt);
+  disporahmen = 1000;
 }
 
-Konto::Konto(std::vector<std::weak_ptr<Person>> zeichnungsberechtigt) {
-  kontonummer = std::string("AT")+std::to_string(counter++);
-  kontostand = 0;
-  disporahmen = 0;
-  this->zeichnungsberechtigt = zeichnungsberechtigt;
+void Konto::setup(std::shared_ptr<Person> client) {
+  client->add_konto(this->get_shared_ptr_to_konto());
+  this->zeichnungsberechtigt.push_back(client);
+  client->get_ref_to_bank()->add_client(client->get_name(), client->get_konten());
+  client->get_ref_to_bank()->add_account(kontonummer, zeichnungsberechtigt);
 }
-
-Konto::~Konto() {}
 
 void Konto::einzahlen(unsigned int betrag) {
   kontostand += betrag;
 }
 
-//TODO: take into account the credit limit of the bank account "disporahmen"
 bool Konto::auszahlen(unsigned int betrag) {
-  if (kontostand >= betrag) {
+  if (kontostand + disporahmen >= betrag) {
     kontostand -= betrag;
     return true;
   }
   return false;
 }
 
+
 bool Konto::ueberweisen(unsigned int betrag, Konto& ziel) {
-  if (kontostand >= betrag) {
+  if (kontostand + disporahmen >= betrag) {
     kontostand -= betrag;
     ziel.kontostand += betrag;
     return true;
@@ -41,12 +38,27 @@ bool Konto::ueberweisen(unsigned int betrag, Konto& ziel) {
 }
 
 bool Konto::add_zeichnungsberechtigt(Person& p) {
-  if (zeichnungsberechtigt.size() == 10) {
-    return false;
+  if (zeichnungsberechtigt.size() <= 10) {
+    zeichnungsberechtigt.push_back(p.get_shared_ptr_to_person());
+    p.add_konto(this->get_shared_ptr_to_konto());
+    return true;
   }
-  zeichnungsberechtigt.push_back(p.get_shared_ptr_to_person());
-  p.get_konten().push_back(this->get_shared_ptr_to_konto());
-  return true;
+  return false;
+}
+
+
+void Konto::zeichnungsberechtigung_loeschen(std::shared_ptr<Person> p) {
+  if(zeichnungsberechtigt.size() <= 1){
+    p->get_ref_to_bank()->remove_account(get_shared_ptr_to_konto());
+    return;
+  }
+  for(auto it = this->zeichnungsberechtigt.begin(); it != this->zeichnungsberechtigt.end();){
+    if (it->lock()->get_name() == p->get_name()) {
+      it = this->zeichnungsberechtigt.erase(it);
+    } else {
+      ++it;
+    }
+  }
 }
 
 std::shared_ptr<Konto> Konto::get_shared_ptr_to_konto() {
@@ -57,13 +69,6 @@ std::vector<std::weak_ptr<Person>> Konto::get_all_zeichnungsberechtigt() {
   return zeichnungsberechtigt;
 }
 
-void Konto::zeichnungsberechtigung_loeschen(std::shared_ptr<Person> p) {
-  for(auto it = this->zeichnungsberechtigt.begin(); it != this->zeichnungsberechtigt.end();){
-    if (it->lock()->get_name() == p->get_name()) {
-      it = this->zeichnungsberechtigt.erase(it);
-    } else {
-      ++it;
-    }
-  }
-  // std::cout << "HERE " << zeichnungsberechtigt.size() << std::endl;
+std::string Konto::get_account_number() const {
+  return kontonummer;
 }
