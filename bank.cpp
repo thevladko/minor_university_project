@@ -30,7 +30,6 @@ void Bank::remove_client(std::shared_ptr<Person> p) {
   for(auto it = clients_map.begin(); it != clients_map.end();){
     if(it->first == p->get_name()) {
       it = clients_map.erase(it);
-      update_clients(p->get_name(), p->get_konten());
     } else {
       ++it;
     }
@@ -41,7 +40,6 @@ void Bank::remove_account(std::shared_ptr<Konto> k) {
   for(auto it = accounts_map.begin(); it != accounts_map.end();){
     if(it->first == k->get_account_number()) {
       it = accounts_map.erase(it);
-      update_accounts(k->get_account_number(), k->get_all_zeichnungsberechtigt());
     } else {
       ++it;
     }

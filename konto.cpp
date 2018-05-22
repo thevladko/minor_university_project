@@ -35,6 +35,7 @@ bool Konto::ueberweisen(unsigned int betrag, Konto& ziel) {
     ziel.kontostand += betrag;
     return true;
   }
+  // throw std::runtime_error("did not transfer. not enough credit.");
   return false;
 }
 
@@ -53,17 +54,10 @@ bool Konto::add_zeichnungsberechtigt(Person& p) {
 void Konto::zeichnungsberechtigung_loeschen(std::shared_ptr<Person> p) {
   for(auto it = this->zeichnungsberechtigt.begin(); it != this->zeichnungsberechtigt.end();){
     if (it->lock()->get_name() == p->get_name()) {
-      it->reset();
-      p->get_ref_to_bank()->update_clients(p->get_name(), p->get_konten());
-      p->get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
       it = this->zeichnungsberechtigt.erase(it);
     } else {
       ++it;
     }
-  }
-  if(zeichnungsberechtigt.size() < 1){
-    p->get_ref_to_bank()->remove_account(get_shared_ptr_to_konto());
-    p->get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
   }
 }
 

@@ -12,9 +12,13 @@ bool Person::konto_teilen(Konto& k, Person& p) {
 void Person::kuendigen() {
   for(std::shared_ptr<Konto> account : konten) {
     account->zeichnungsberechtigung_loeschen(get_shared_ptr_to_person());
+    bank->update_accounts(account->get_account_number(), account->get_all_zeichnungsberechtigt());
+    if(account->get_all_zeichnungsberechtigt().size() < 1){
+      bank->remove_account(account->get_shared_ptr_to_konto());
+    }
   }
-  bank->remove_client(get_shared_ptr_to_person());
   konten.clear();
+  bank->remove_client(get_shared_ptr_to_person());
 }
 
 //TODO make with different types of konto
