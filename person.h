@@ -17,8 +17,7 @@ class Person : public std::enable_shared_from_this<Person> {
 public:
   Person(std::string);
   bool konto_teilen(Konto&, Person&);
-  //TODO::change return type of neues_konto() back to bool
-  std::shared_ptr<Konto> neues_konto();
+  std::shared_ptr<Konto> neues_konto(bool);
   void kuendigen();
   std::string get_name() const;
   std::shared_ptr<Person> get_shared_ptr_to_person();

@@ -12,8 +12,11 @@ public:
   Businesskonto();
   void set_gebuehren(double) override;
   void berechne_gebuehren(int) override;
-  void print(std::ostream&) const override;
   int get_prozent();
+  void einzahlen(unsigned int) override;
+  bool auszahlen(unsigned int) override;
+  bool ueberweisen(unsigned int, Konto&) override;
+  void print(std::ostream&) const override;
 };
 
 #endif

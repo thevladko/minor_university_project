@@ -33,16 +33,16 @@ int main() {
 
   auto bank = std::make_shared<Bank>();
 
-  auto vladik = bank->neuer_kunde("Vladik");
+  auto mark = bank->neuer_kunde("Mark");
   auto gregor = bank->neuer_kunde("Gregor");
   auto maria = bank->neuer_kunde("Maria");
 
-  auto konto = vladik->neues_konto();
+  auto konto = mark->neues_konto(false);
 
-  vladik->konto_teilen(*konto, *gregor);
-  vladik->konto_teilen(*konto, *maria);
+  mark->konto_teilen(*konto, *gregor);
+  mark->konto_teilen(*konto, *maria);
 
-  vladik->get_konten()[0]->ueberweisen(95, *konto);
+  mark->get_konten()[0]->ueberweisen(95, *konto);
 
   bank->print_clients(std::cout);
   std::cout << "___________________________________________________________________________________________" << std::endl;
@@ -54,7 +54,7 @@ int main() {
   std::cout << "___________________________________________________________________________________________\n\n";
   bank->print_accounts(std::cout);
 
-  vladik->kuendigen();
+  mark->kuendigen();
   maria->kuendigen();
   gregor->kuendigen();
 

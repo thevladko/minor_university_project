@@ -1,4 +1,5 @@
 #include "businesskonto.h"
+#include <iostream>
 
 Businesskonto::Businesskonto() : Konto() {
   prozent = 5;
@@ -19,6 +20,33 @@ int Businesskonto::get_prozent() {
   return prozent;
 }
 
-void Businesskonto::print(std::ostream& o) const{
+void Businesskonto::einzahlen(unsigned int betrag) {
+  Konto::einzahlen(betrag);
+  berechne_gebuehren(betrag);
+}
 
+bool Businesskonto::auszahlen(unsigned int betrag) {
+  if(Konto::auszahlen(betrag)) {
+    berechne_gebuehren(betrag);
+    return true;
+  }
+  return false;
+}
+
+bool Businesskonto::ueberweisen(unsigned int betrag, Konto& ziel) {
+  if (Konto::ueberweisen(betrag, ziel)){
+    berechne_gebuehren(betrag);
+    return true;
+  }
+  return false;
+}
+
+void Businesskonto::print(std::ostream& o) const {
+  o << "|*** ACCOUNT OBJECT ***|\n";
+  o << "Account number: " << kontonummer << '\n';
+  o << "Bank balance: " << kontostand << '\n';
+  o << "Credit Boundaries: " << disporahmen << '\n';
+  o << "Fees: " << gebuehren << '\n';
+  o << "Percent: " << prozent << '\n';
+  o << "|********************|\n\n";
 }

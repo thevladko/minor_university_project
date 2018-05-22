@@ -23,16 +23,16 @@ public:
   int get_kontostand() const;
   int get_disporahmen() const;
   double get_gebuehren() const;
-  void einzahlen(unsigned int);
-  bool auszahlen(unsigned int);
-  bool ueberweisen(unsigned int, Konto&);
+  virtual void einzahlen(unsigned int);
+  virtual bool auszahlen(unsigned int);
+  virtual bool ueberweisen(unsigned int, Konto&);
   bool add_zeichnungsberechtigt(Person&);
   void zeichnungsberechtigung_loeschen(std::shared_ptr<Person>);
   void setup(std::shared_ptr<Person>);
   std::shared_ptr<Konto> get_shared_ptr_to_konto();
   std::vector<std::weak_ptr<Person>> get_all_zeichnungsberechtigt();
-  virtual void print(std::ostream&) const;
-  virtual void berechne_gebuehren(int){}
+  virtual void print(std::ostream&) const = 0;
+  virtual void berechne_gebuehren(int) = 0;
   virtual void set_gebuehren(double){}
 };
 

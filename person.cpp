@@ -1,4 +1,6 @@
 #include "person.h"
+#include "girokonto.h"
+#include "businesskonto.h"
 #include <iostream>
 
 Person::Person(std::string name) {
@@ -21,9 +23,13 @@ void Person::kuendigen() {
   bank->remove_client(get_shared_ptr_to_person());
 }
 
-//TODO make with different types of konto
-std::shared_ptr<Konto> Person::neues_konto() {
-  auto new_account{std::make_shared<Konto>()};
+std::shared_ptr<Konto> Person::neues_konto(bool giro) {
+  std::shared_ptr<Konto> new_account;
+  if(giro) {
+    new_account = std::make_shared<Girokonto>();
+  } else {
+    new_account = std::make_shared<Businesskonto>();
+  }
   new_account->setup(this->get_shared_ptr_to_person());
   return new_account;
 }

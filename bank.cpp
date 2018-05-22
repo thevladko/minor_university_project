@@ -6,7 +6,7 @@ Bank::Bank() {}
 std::shared_ptr<Person> Bank::neuer_kunde(std::string name) {
   auto new_client{std::make_shared<Person>(name)};
   new_client->connect_with_bank(this);
-  new_client->neues_konto();
+  new_client->neues_konto(true);
   return new_client;
 }
 
