@@ -19,6 +19,6 @@ int Businesskonto::get_prozent() {
   return prozent;
 }
 
-std::ostream& Businesskonto::print(std::ostream& o) const{
-  return o;
+void Businesskonto::print(std::ostream& o) const{
+
 }

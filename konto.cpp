@@ -12,8 +12,8 @@ Konto::Konto() {
 void Konto::setup(std::shared_ptr<Person> client) {
   client->add_konto(this->get_shared_ptr_to_konto());
   this->zeichnungsberechtigt.push_back(client);
-  client->get_ref_to_bank()->add_client(client->get_name(), client->get_konten());
-  client->get_ref_to_bank()->add_account(kontonummer, zeichnungsberechtigt);
+  client->get_ref_to_bank()->update_clients(client->get_name(), client->get_konten());
+  client->get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
 }
 
 void Konto::einzahlen(unsigned int betrag) {
@@ -42,8 +42,8 @@ bool Konto::add_zeichnungsberechtigt(Person& p) {
   if (zeichnungsberechtigt.size() <= 10) {
     zeichnungsberechtigt.push_back(p.get_shared_ptr_to_person());
     p.add_konto(this->get_shared_ptr_to_konto());
-    // p.get_ref_to_bank()->add_client(p.get_name(), p.get_konten());
-    // p.get_ref_to_bank()->add_account(kontonummer, zeichnungsberechtigt);
+    p.get_ref_to_bank()->update_clients(p.get_name(), p.get_konten());
+    p.get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
     return true;
   }
   return false;
@@ -54,6 +54,8 @@ void Konto::zeichnungsberechtigung_loeschen(std::shared_ptr<Person> p) {
   for(auto it = this->zeichnungsberechtigt.begin(); it != this->zeichnungsberechtigt.end();){
     if (it->lock()->get_name() == p->get_name()) {
       it->reset();
+      p->get_ref_to_bank()->update_clients(p->get_name(), p->get_konten());
+      p->get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
       it = this->zeichnungsberechtigt.erase(it);
     } else {
       ++it;
@@ -61,6 +63,7 @@ void Konto::zeichnungsberechtigung_loeschen(std::shared_ptr<Person> p) {
   }
   if(zeichnungsberechtigt.size() < 1){
     p->get_ref_to_bank()->remove_account(get_shared_ptr_to_konto());
+    p->get_ref_to_bank()->update_accounts(kontonummer, zeichnungsberechtigt);
   }
 }
 
@@ -76,6 +79,23 @@ std::string Konto::get_account_number() const {
   return kontonummer;
 }
 
-std::ostream& Konto::print(std::ostream& o) const {
-  return o;
+int Konto::get_kontostand() const {
+  return kontostand;
+}
+
+int Konto::get_disporahmen() const {
+  return disporahmen;
+}
+
+double Konto::get_gebuehren() const {
+  return gebuehren;
+}
+
+void Konto::print(std::ostream& o) const {
+  o << "|*** ACCOUNT OBJECT ***|\n";
+  o << "Account number: " << kontonummer << '\n';
+  o << "Bank balance: " << kontostand << '\n';
+  o << "Credit Boundaries: " << disporahmen << '\n';
+  o << "Fees: " << gebuehren << '\n';
+  o << "|********************|\n\n";
 }

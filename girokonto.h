@@ -12,7 +12,7 @@ public:
   double get_fix_gebuehren() const;
   void set_gebuehren(double) override;
   void berechne_gebuehren(int) override;
-  std::ostream& print(std::ostream&) const override;
+  void print(std::ostream&) const override;
 };
 
 #endif

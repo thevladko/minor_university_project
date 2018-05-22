@@ -19,6 +19,6 @@ double Girokonto::get_fix_gebuehren() const {
   return fixgebuehren;
 }
 
-std::ostream& Girokonto::print(std::ostream& o) const {
-  return o;
+void Girokonto::print(std::ostream& o) const {
+
 }

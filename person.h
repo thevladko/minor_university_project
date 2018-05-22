@@ -26,6 +26,7 @@ public:
   void add_konto(std::shared_ptr<Konto>);
   void connect_with_bank(Bank*);
   Bank* get_ref_to_bank();
+  void print(std::ostream&) const;
 };
 
 #endif

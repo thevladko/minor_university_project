@@ -47,3 +47,9 @@ void Person::connect_with_bank(Bank* b) {
 Bank* Person::get_ref_to_bank() {
   return bank;
 }
+
+void Person::print(std::ostream& o) const {
+  o << "|*** CLIENT OBJECT ***|\n";
+  o << "Client Name: " << name << '\n';
+  o << "|********************|\n\n";
+}

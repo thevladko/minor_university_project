@@ -20,11 +20,14 @@ public:
   std::unordered_map< std::string, std::vector<std::shared_ptr<Konto> > > get_clients_map() const;
   std::unordered_map< std::string, std::vector<std::weak_ptr<Person> > > get_accounts_map() const;
 
-  void add_client(std::string, std::vector<std::shared_ptr<Konto>>);
-  void add_account(std::string, std::vector<std::weak_ptr<Person>>);
+  void update_clients(std::string, std::vector<std::shared_ptr<Konto>>);
+  void update_accounts(std::string, std::vector<std::weak_ptr<Person>>);
 
   void remove_client(std::shared_ptr<Person>);
   void remove_account(std::shared_ptr<Konto>);
+
+  void print_clients(std::ostream&) const;
+  void print_accounts(std::ostream&) const;
 };
 
 #endif
