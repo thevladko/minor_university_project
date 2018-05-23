@@ -23,6 +23,7 @@ void Person::kuendigen() {
   bank->remove_client(get_shared_ptr_to_person());
 }
 
+//TODO change return type back to bool
 std::shared_ptr<Konto> Person::neues_konto(bool giro) {
   std::shared_ptr<Konto> new_account;
   if(giro) {
