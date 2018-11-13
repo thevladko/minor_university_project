@@ -12,6 +12,8 @@ int main() {
 
   auto bank = std::make_shared<Bank>();
 
+  std::cout << "Hello World!";
+
   auto mark = bank->neuer_kunde("Mark");
   auto gregor = bank->neuer_kunde("Gregor");
   auto maria = bank->neuer_kunde("Maria");
